@@ -1,8 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>AI Resume Tool</title></head>
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Resume Optimizer</title>
+</head>
 <body>
-<h1>AI Resume Optimizer</h1>
-<p>This is a placeholder for the resume optimization tool.</p>
+  <h1>AI Resume Optimizer</h1>
+  <textarea id="resumeText" rows="10" cols="50" placeholder="Paste your resume text here..."></textarea><br />
+  <button id="optimizeBtn">Optimize Resume</button>
+  <h2>Optimized Resume:</h2>
+  <pre id="result"></pre>
+
+  <script>
+    const btn = document.getElementById('optimizeBtn');
+    const textarea = document.getElementById('resumeText');
+    const result = document.getElementById('result');
+
+    btn.addEventListener('click', async () => {
+      const text = textarea.value.trim();
+      if (!text) {
+        alert('Please enter resume text');
+        return;
+      }
+      result.textContent = 'Processing...';
+
+      try {
+        const response = await fetch('/api/optimize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ resumeText: text })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        result.textContent = data.optimizedText || 'No result';
+      } catch (error) {
+        result.textContent = `Error: ${error.message}`;
+      }
+    });
+  </script>
 </body>
 </html>
